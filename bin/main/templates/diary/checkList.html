@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"></html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+
+.notes {
+          background-attachment: local;
+          background-image:
+            linear-gradient(to right, white 10px, transparent 10px),
+            linear-gradient(to left, white 10px, transparent 10px),
+            repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px);
+          line-height: 31px;
+          padding: 8px 10px 10px 10px;
+          margin-left: 5rem; 
+          margin-right: 5rem; 
+        }
+.titleText{
+    font-family: 'Nanum Myeongjo';
+}
+    </style>
+</head>
+<body>
+
+     <!-- HEADER -->
+    <div th:insert="common/header.html" id="header"></div>
+
+       <!-- Form -->
+       <div class="w3-container w3-white w3-margin w3-padding-large">
+        <div class="w3-center">
+        <a style="font-size: 50px; font-weight: bold;">Step 2 <br/></a>
+        <a>당신의 하루 속, 문장을 선택해주세요. <br/>
+        <span class="w3-opacity">문장은 최대 5개까지 선택해주세요.</span>
+        </a><br/><br/><br/>
+        </div>
+        <div class="titleText">
+            <p style="text-align: center; font-size: large; font-weight:1000">당신의 이야기</p>
+            <pre><p class="notes" th:text="${diaryDto.content}" style="text-align: center;"></p></pre>
+            <p style="text-align: center; font-size: large; font-weight:1000">당신의 문장</p>
+        </div>
+        <form name="checkListForm" th:object="${diaryDto}" action="/diary/save" method="post"  onsubmit="return false">
+            <input type="hidden" th:field="${diaryDto.email}"/>
+            <input type="hidden" th:field="${diaryDto.content}"/>
+            <input type="hidden" th:field="${diaryDto.createdDate}"/>
+            <div class="w3-white w3-border notes" style="border:solid 1px #ccc;">   
+                    <div th:object="${checkList}" >
+                        <div th:each="sentence : ${allCheckList}">
+                            <input type="checkbox" name="sentence"
+                            th:id="${sentence}" th:value="${sentence}" th:field="*{checked}">
+                            <label th:for="${sentence}" th:text="${sentence}" style="margin-bottom: 0em;"> Tag</label>
+                        </div>
+                    </div>
+                </div>
+                    <p style="text-align: center; margin-top: 2rem;">
+                        <button type="submit" class="w3-button w3-white w3-border" th:onclick="'javascript:submitCheck();'"  style="float:none;" ><b>작성</b></button>
+                    </p>
+                </form>
+        </div>
+        
+    <!-- FOOTER -->
+    <div th:insert="common/footer.html" id="footer"></div>
+
+    <!-- script -->
+<script th:inline="javascript">
+ 
+    function submitCheck() {
+        var chkNum = $("input[type='checkbox']:checked").filter(':checked').length;
+        if(chkNum==0){
+            alert("하나 이상의 문장을 선택해주세요.");
+        } else if(chkNum>5){
+            alert("문장은 다섯개까지만 선택해주세요");
+        } else {
+            var checkListForm = document.checkListForm;
+            checkListForm.submit();
+        }
+    } 
+</script>
+</body>
+</html>

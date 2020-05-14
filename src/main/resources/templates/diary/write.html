@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .notes {
+          background-attachment: local;
+          background-image:
+            linear-gradient(to right, white 10px, transparent 10px),
+            linear-gradient(to left, white 10px, transparent 10px),
+            repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px);
+          line-height: 31px;
+          padding: 8px 10px;
+        }
+    </style>
+</head>
+<body>
+     <!-- HEADER -->
+     
+    <div th:insert="common/header.html" id="header"></div>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-datetimepicker/2.7.1/css/bootstrap-material-datetimepicker.min.css}">
+    <link rel="stylesheet" th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}">
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-datetimepicker/2.7.1/js/bootstrap-material-datetimepicker.min.js}"></script>
+
+       <!-- Form -->
+       <div class="w3-container w3-white w3-margin w3-padding-large">
+            <div class="w3-center">
+            <a style="font-size: 50px; font-weight: bold;">Step 1 <br/></a>
+            <a>당신의 이야기를 들려주세요. <br/>
+            <span class="w3-opacity">모든 문장은 마침표, 느낌표, 물음표로 구분됩니다.</span>
+            </a><br/><br/><br/>
+            <div class="w3-input w3-border errorDiv" style="display: none;" > 
+                <p style="font-size: 20px; font-weight: bold;">Error Message</p>
+                <p class="w3-opacity errorMessage" ></p>
+ 
+            </div>
+            </div>
+            <div class="w3-justify">     
+                <form th:object="${diaryDto}" name="diaryForm" action="/write" method="post" onsubmit="return false">
+                    email : <p><input class="w3-input w3-border" id="email" name="email" type="text" style="width:100%;"></p>
+                    date : <p><input class="result w3-input w3-border" type="text" id="date-time" name="createdDate" 
+                        placeholder="오늘이 아니어도 괜찮아요" style="width:100%;"></p>
+                    content
+                    <textarea class="notes" id="content" name="content" style="width:100%;height: 15em;" placeholder="그 날은 어떤 마음이었나요?" ></textarea><br>
+                <br/>
+                    <p style="float: inherit; text-align: center;">
+                        <button type="submit" class="w3-button w3-white w3-border" style="float:none;" th:onclick="'javascript:submitCheck();'"  ><b>Write</b></button>
+                    </p>
+                </form>
+            </div>
+        </div> 
+     <!-- 변수 셋팅 -->
+     <script th:inline="javascript">
+        /*<![CDATA[*/
+        "";
+        /*]]>*/
+        $(function () {
+            $('#date-time').bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+        });
+
+        // 유효성 검사
+        function submitCheck() {	
+            //reset
+            $(".errorDiv").css("display","none");	
+            $(".errorMessage").text("");
+
+            var email = document.getElementById("email").value;
+            var cdate = document.getElementById('date-time').value;
+            var content = document.getElementById('content').value;
+            
+            var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+            if(email == '' || cdate == '' || content == '') {
+                    //alert('입력하세요.');
+                    $(".errorMessage").append("<li>빈칸인 곳이 있어요</li>");
+                    $(".errorDiv").css("display","");
+            } else if(exptext.test(email)==false){
+                    //alert("이메일형식이 올바르지 않습니다.");
+                    $(".errorMessage").append("<li>알맞은 이메일 형식을 입력해주세요</li>");
+                    $(".errorDiv").css("display","");
+            } else {
+            var diaryForm = document.diaryForm;
+            diaryForm.submit();
+            }
+        }
+
+        </script>           
+        <!-- FOOTER -->
+        <div th:insert="common/footer.html" id="footer"></div>
+</body>
+</html>

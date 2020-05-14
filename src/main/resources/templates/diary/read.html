@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+    <title>Title</title>
+
+    <style>
+
+.notes {
+  background-attachment: local;
+  background-image:
+    linear-gradient(to right, white 10px, transparent 10px),
+    linear-gradient(to left, white 10px, transparent 10px),
+    repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px);
+    line-height: 31px;
+    padding: 8px 10px 10px 10px;
+    margin-left: 2rem; 
+    margin-right: 2rem; 
+}
+
+    </style>
+     <!-- HEADER -->
+     
+    <div th:insert="common/header.html" id="header"></div>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-datetimepicker/2.7.1/css/bootstrap-material-datetimepicker.min.css}">
+    <link rel="stylesheet" th:href="@{https://fonts.googleapis.com/icon?family=Material+Icons}">
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-datetimepicker/2.7.1/js/bootstrap-material-datetimepicker.min.js}"></script>
+</head>
+<body>
+       <!-- read section -->
+       <div class="w3-container w3-white w3-margin w3-padding-large">
+
+        <div th:if="${diaryDto !=''}"> 
+        <form id="delete-form" th:action="@{'/diary/delete/' + ${diaryDto.id}}" method="post">
+            <input type="hidden" name="_method" value="delete"/>
+            <button type="submit" class="w3-button w3-white w3-border" style="float:none;"><b>삭제</b></button>
+        </form>
+
+        <div class="titleText">
+            <p style="text-align: center; font-size: large; font-weight:1000">당신의 하루</p>
+            <pre><p class="notes" th:text="${diaryDto.content}" style="text-align: center;"></p></pre>
+            <p style="text-align: center; font-size: large; font-weight:1000">당신의 문장</p>
+        </div>
+
+        <div class="w3-justify">    
+            <form th:action="@{'/diary/done/'  + ${diaryDto.id}}" method="post">
+                <input type="hidden" name="_method" value="PUT"/>
+                <input type="hidden" id="checkedList" name="checkedList" value=""/>
+                <input type="hidden" id="notCheckedList" name="notCheckedList" value=""/>
+                <div class="w3-white w3-border notes" style="border:solid 1px #ccc;"> 
+                <input type="hidden" name="no" th:value="${diaryDto.id}"/>
+                <div th:each="ck, n : ${checkList}">
+                    <input type="hidden" name="checked" th:value="${ck.id} + '-' + ${n.index}"/>
+                    <input type="hidden" th:value="${ck.sentence}"/>
+                    <input type="checkbox" name="hasChecked" class="done" id="done" th:value="${ck.id}"  th:checked="${ck.hasChecked} ? 'checked'">
+                    <label th:for="${ck.sentence}" th:text="${ck.sentence}" style="margin-bottom: 0em;" >Tag</label> 
+                </div>
+                </div>
+                <p style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" th:onclick="'javascript:submitCheck();'" class="w3-button w3-white w3-border" style="float:none;"><b>완료</b></button>
+                </p>
+             </form>
+        </div>
+    
+
+    </div> 
+
+
+    <div th:unless="${diaryDto !=''}"> 
+
+        <div class="titleText">
+            <p style="text-align: center; font-size: large; font-weight:1000">당신의 이야기</p>
+            <p style="text-align: center; font-size: large; font-weight:1000">당신의 문장</p>
+            <p class="notes" style="text-align: center;">당신의 이야기가 존재 하지 않습니다</p>
+            <p class="notes" style="text-align: center;">이메일, 코드를 확인해주세요.</p>
+        </div>
+        <p style="float: inherit; text-align: center;">
+            <a th:href="@{/search}" class="w3-button w3-white w3-border"  role="button">돌아가기</a></p>
+    </div>
+
+<script th:inline="javascript">
+
+    function submitCheck() {
+        var checkedArr = new Array();
+        var notcheckedArr = new Array();
+        var chkbox = $(".done");
+
+        $("input[name=hasChecked]:checkbox").each(function() {
+
+            if($(this).is(":checked") == true) {
+            var checkboxValue = $(this).val();
+            alert("checkboxValue=" + checkboxValue);
+            checkedArr.push(checkboxValue);
+            } else {
+            var checkboxValue = $(this).val();
+            alert("notcheckboxValue=" + checkboxValue);
+            notcheckedArr.push(checkboxValue);
+            }
+
+        });
+
+        $("#checkedList").val(checkedArr);
+        alert($("#checkedList").val());
+        $("#notCheckedList").val(notcheckedArr);
+        alert($("#notCheckedList").val());
+    }
+
+        </script>           
+        <!-- FOOTER -->
+        <div th:insert="common/footer.html" id="footer"></div>
+</body>
+</html>

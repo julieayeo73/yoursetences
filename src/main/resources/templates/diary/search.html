@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- HEADER -->
+    <div th:insert="common/header.html" id="header"></div>
+
+    <!-- search -->
+
+    <div class="w3-center">
+      <span class="w3-opacity"> 오늘 혹은 어느 날 하루를 정리하고 싶다면, 기록해주세요 &#128221; </span><br/>
+      <span class="w3-opacity"> 당신의 기록 속, 당신의 생각을 정리하고 &#11088; </span><br/>
+      <span class="w3-opacity"> 당신의 문장을 메일로 보내드릴게요 &#9993; </span><br/>
+
+    </div>
+
+    <p style="float: inherit; text-align: center;">
+      <a th:href="@{/write}" class="w3-button w3-white w3-border"  role="button">기록</a></p>
+
+          <form action="/diary/read" method="POST"  name="searchForm" onsubmit="return false">
+            <div class="w3-white w3-margin">
+              <div class="w3-container w3-white">
+                <p style="text-align: center;">리마인드에는 당신의 이메일과 코드가 필요해요.</p>
+                <p><input class="w3-input w3-border" id="email" name="email" type="text" placeholder="당신의 이메일" style="width:100%; text-align: center;"></p>
+                <p><input class="w3-input w3-border" id="code" name="code" type="text" placeholder="코드" style="width:100%; text-align: center;"></p>
+                <p style="float: inherit; text-align: center;">
+                  <button type="submit"  th:onclick="'javascript:submitCheck();'" class="w3-button w3-white w3-border" 
+                  style="float:none;"><b>검색</b></button></p>
+              </div>
+            </div>
+        </form>
+
+        <script th:inline="javascript">
+        // 유효성 검사
+        function submitCheck() {	
+            var email = document.getElementById("email").value;
+            var code = document.getElementById('code').value;
+            if(email == '' || code == '' ) {
+              alert("이메일 또는 코드를 입력해주세요");
+            } else {
+            var searchForm = document.searchForm;
+            searchForm.submit();
+            }
+        }
+        </script>
+      
+
+    <!-- FOOTER -->
+    <div th:insert="common/footer.html" id="footer"></div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- HEADER -->
+    <div th:insert="common/header.html" id="header"></div>
+    <a th:href="@{/write}" class="btn btn-primary" role="button">Write</a>
+
+    <!-- search -->
+    <table>
+      <thead>
+      <tr>
+          <th class="one wide">번호</th>
+          <th class="ten wide">글제목</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <!-- CONTENTS !-->
+      <tr th:each="board : ${diaryList}">
+          <td>
+              <span th:text="${board.email}"></span>
+          </td>
+          <td>
+              <a th:href="@{'/post/' + ${board.email}}">
+                  <span th:text="${board.createdDate}"></span>
+              </a>
+          </td>
+      </tr>
+      </tbody>
+  </table>
+
+  <!-- FOOTER -->
+    <div th:insert="common/footer.html" id="footer"></div>
+</body>
+</html>
